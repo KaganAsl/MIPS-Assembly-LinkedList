@@ -163,10 +163,10 @@ mainTerminate:
 
 
 createArray:
-	
-	#Write your instructions here!
-	
-	jr $ra
+	# $a0 is size of array
+	li $v0, 9 # $a0 = number of bytes to allocate
+	syscall
+	jr $ra # it stores address already in $v0 so we can just return
 
 resizeArray:
 	
