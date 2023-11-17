@@ -169,9 +169,17 @@ createArray:
 	jr $ra # it stores address already in $v0 so we can just return
 
 resizeArray:
-	
-	#Write your instructions here!
-	
+	# $a0 is old address, $a1 is old size, $a2 is new size
+	li $v0, 9
+	syscall # Now I should copy from old area to new area
+	move $t0, $v0 # I should track whic location I will place elements
+	li $t1, 0 # I don't know where to stop but since I have old size I can track it
+RAL:	lw $t2, 0($a0) # RAL = resizeArrayLoop
+	sw $t2, 0($t0)
+	addi $a0, $a0, 4
+	addi $t0, $t0, 4
+	addi $t1, $t1, 4
+	bne $a1, $t1, RAL
 	jr $ra
 
 putElementToArray:
