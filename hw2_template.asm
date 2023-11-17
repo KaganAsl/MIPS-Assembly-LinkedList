@@ -177,7 +177,8 @@ resizeArray:
 	syscall # Now I should copy from old area to new area
 	move $t0, $v0 # I should track whic location I will place elements
 	li $t1, 0 # I don't know where to stop but since I have old size I can track it
-RAL:	lw $t2, 0($a0) # RAL = resizeArrayLoop
+	RAL: # RAL = resizeArrayLoop
+	lw $t2, 0($a0)
 	sw $t2, 0($t0)
 	addi $a0, $a0, 4
 	addi $t0, $t0, 4
