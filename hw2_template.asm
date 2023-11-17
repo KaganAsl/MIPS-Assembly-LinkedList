@@ -164,12 +164,15 @@ mainTerminate:
 
 createArray:
 	# $a0 is size of array
+	mul $a0, $a0, 8 # Each element is 4+4 byte
 	li $v0, 9 # $a0 = number of bytes to allocate
 	syscall
 	jr $ra # it stores address already in $v0 so we can just return
 
 resizeArray:
 	# $a0 is old address, $a1 is old size, $a2 is new size
+	mul $a1, $a1, 8 # Each element is 4+4 byte
+	mul $a2, $a2, 8 # Each element is 4+4 byte
 	li $v0, 9
 	syscall # Now I should copy from old area to new area
 	move $t0, $v0 # I should track whic location I will place elements
