@@ -175,7 +175,7 @@ resizeArray:
 	mul $a2, $a2, 8 # Each element is 4+4 byte
 	li $v0, 9
 	syscall # Now I should copy from old area to new area
-	addi $sp, $sp, -4 # I will use one s register so I am moving it
+	addi $sp, $sp, -4 # I will use one s register so I should move stack
 	sw $s0, 0($sp) # Saving s register in stack
 	move $s0, $v0 # I should track which location I will place elements
 	li $t1, 0 # I don't know where to stop but since I have old size I can track it
@@ -210,9 +210,20 @@ createLinkedList:
 	jr $ra
 
 putElementToLinkedList:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of linked list, $a1 is address of element
+	addi $sp, $sp, -4 # I will use one s register so I should move stack
+	sw $s0, 0($sp) # Saving s register in stack
+	move $s0, $a0 # I should find the empty location
+	PETLLL_Start: # putElementLinkedListLoop_Start
+	lw $t1, 0($s0) # Looking current location
+	beq $t1, $zero, PETLLL_End # If location is empty I can put element here
+	addi $s0, $s0, 4 # Address of next element (which is next node)
+	lw $s0, 0($s0)
+	b PETLLL_Start
+	PETLLL_End: # putElementLinkedListLoop_End
+	sw $a1, 0($s0) # Putting element to linkedList
+	lw $s0, 0($sp) # Loading old s content to register
+	addi $sp, $sp, 4 # I should restore stack
 	jr $ra
 
 removeElementFromTheLinkedList:
