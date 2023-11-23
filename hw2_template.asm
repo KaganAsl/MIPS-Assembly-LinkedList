@@ -175,15 +175,19 @@ resizeArray:
 	mul $a2, $a2, 8 # Each element is 4+4 byte
 	li $v0, 9
 	syscall # Now I should copy from old area to new area
-	move $t0, $v0 # I should track which location I will place elements
+	addi $sp, $sp, -4 # I will use one s register so I am moving it
+	sw $s0, 0($sp) # Saving s register in stack
+	move $s0, $v0 # I should track which location I will place elements
 	li $t1, 0 # I don't know where to stop but since I have old size I can track it
 	RAL: # RAL = resizeArrayLoop
 	lw $t2, 0($a0)
-	sw $t2, 0($t0)
+	sw $t2, 0($s0)
 	addi $a0, $a0, 8
-	addi $t0, $t0, 8
+	addi $s0, $s0, 8
 	addi $t1, $t1, 8
 	bne $a1, $t1, RAL
+	lw $s0, 0($sp) # Loading old s content to register
+	addi $sp, $sp, 4 # I should restore stack
 	jr $ra
 
 putElementToArray:
