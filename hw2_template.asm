@@ -286,9 +286,18 @@ traverseLinkedList:
 	jr $ra
 
 createSong:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of name (4 byte), $a1 is duration of song (4 byte)
+	addi $sp, $sp, -8 # I will save args in s registers
+	sw $s0, 0($sp)
+	sw $s1, 4($sp)
+	move $s0, $a0
+	move $s1, $a1
+	li $a0, 8 # 4+4 total 8 byte
+	li $v0, 9
+	syscall
+	lw $s0, 0($v0)
+	lw $s1, 4($v0)
+	addi $sp, $sp, 8
 	jr $ra
 
 isSong:
