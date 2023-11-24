@@ -203,7 +203,8 @@ removeElementFromArray:
 	jr $ra
 
 createLinkedList:
-	li $a0, 8 # Since a node is 4+4 byte size should be 8 byte
+	# $a0 is size. Since node is 4+4 byte it should 8
+	li $a0, 8
 	li $v0, 9
 	syscall
 	jr $ra
@@ -213,11 +214,12 @@ putElementToLinkedList:
 	addi $sp, $sp, -4 # I will use one s register so I should move stack
 	sw $s0, 0($sp) # Saving s register in stack
 	move $s0, $a0 # I should find the eligible location
-	bne $s0, $zero, PETLLL_Start # If first node empty I should put there
+	lw $t0, 0($s0) # First element of list
+	bne $t0, $zero, PETLLL_Start # If first node empty I should put there
 	sw $a1, 0($s0) # Putting element to linkedList
 	lw $s0, 0($sp) # Loading old s content to register
 	addi $sp, $sp, 4 # I should restore stack
-	b Exit
+	b PETLL_Exit
 	PETLLL_Start: # ~putElementLinkedListLoop_Start~ If not I should create a new node
 	# Then I should link node to linkedList last node
 	lw $t1, 4($s0) # Looking current location (Offset is 4 since next node address is there)
@@ -236,9 +238,9 @@ putElementToLinkedList:
 	lw $ra, 0($sp) # Loading old ra to register
 	lw $s1, 4($sp) # Loading old s content to register
 	addi $sp, $sp, 8 # I should restore stack
-	lw $s0, 4($sp) # Load old s content to register
+	lw $s0, 0($sp) # Load old s content to register
 	addi $sp, $sp, 4 # I should restore stack
-	Exit: # Exit function
+	PETLL_Exit: # ~putElementLinkedList_Exit~
 	jr $ra
 
 removeElementFromTheLinkedList:
