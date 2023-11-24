@@ -244,9 +244,33 @@ putElementToLinkedList:
 	jr $ra
 
 removeElementFromTheLinkedList:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of linkedList, $a1 index of item
+	# If first element wanted to be deleted we can just change address of the linked list to firs node
+	# next address
+	bne $a1, $zero, DeleteElement # If index != 0
+	lw $t0, 4($a0) # Address of next node
+	move $v0, $a0 # We don't have return but this is the only way to remove first element for me
+	b REFTLL_Exit
+	DeleteElement: # This is the part where we will delete element whic is not first element
+	# To delete element I need address of node which is going to be deleted, address of next node and
+	# previous node. I can easily access next node I don't need to track it but I should track
+	# previous node.
+	addi $sp, $sp, -8 # I will use 2 s registers
+	sw $s0, 0($sp) # previous node
+	sw $s1, 4($sp) # current node
+	li $s0, 0 # no prev node in the beginning
+	move $s1, $a0 # at first current node is address of list
+	li $t0, 0 # for tracking index ( while i != $a0 {i++} )
+		DEL_Start: # DeleteElementLoop_Start
+		move $s0, $s1 # previous node = current node
+		lw $s1, 4($s1) # current node = current node next
+		addi $t0, $t0, 1
+		bne $t0, $a1, DEL_Start
+		DEL_End: # DeleteElementLoop_End
+	lw $t0, 4($s1) # Address of next node
+	sw $t0, 4($s0) # previous node now points next node
+	sw $zero, 4($s1) # current node now points nothing
+	REFTLL_Exit: # ~removeElementFromTheLinkedList_Exit~
 	jr $ra
 
 traverseArray:
