@@ -271,6 +271,9 @@ removeElementFromTheLinkedList:
 	sw $t0, 4($s0) # previous node now points next node
 	sw $zero, 4($s1) # current node now points nothing
 	REFTLL_Exit: # ~removeElementFromTheLinkedList_Exit~
+	lw $s0, 0($sp) # Restore $s0
+	lw $s1, 4($sp) # Restore $s1
+	addi $sp, $sp, 8 # Restore stack pointer
 	jr $ra
 
 traverseArray:
