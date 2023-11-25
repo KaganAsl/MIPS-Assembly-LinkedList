@@ -171,23 +171,29 @@ createArray:
 
 resizeArray:
 	# $a0 is old address, $a1 is old size, $a2 is new size
+	addi $sp, $sp, -8 # I will use two register so I am moving it
+	sw $s0, 0($sp) # Saving s register in stack
+	sw $s1, 4($sp) # Saving s register in stack
+	move $s0, $a0 # I am saving address
 	mul $a1, $a1, 8 # Each element is 4+4 byte
 	mul $a2, $a2, 8 # Each element is 4+4 byte
+	move $a0, $a2 # Size of allocation
 	li $v0, 9
 	syscall # Now I should copy from old area to new area
-	addi $sp, $sp, -4 # I will use one s register so I should move stack
-	sw $s0, 0($sp) # Saving s register in stack
-	move $s0, $v0 # I should track which location I will place elements
+	move $s1, $v0 # I should track which location I will place elements
 	li $t1, 0 # I don't know where to stop but since I have old size I can track it
 	RAL: # RAL = resizeArrayLoop
-	lw $t2, 0($a0)
-	sw $t2, 0($s0)
-	addi $a0, $a0, 8
+	lw $t2, 0($s0)
+	sw $t2, 0($s1)
+	lw $t2, 4($s0)
+	sw $t2, 4($s1)
 	addi $s0, $s0, 8
+	addi $s1, $s1, 8
 	addi $t1, $t1, 8
 	bne $a1, $t1, RAL
 	lw $s0, 0($sp) # Loading old s content to register
-	addi $sp, $sp, 4 # I should restore stack
+	lw $s1, 4($sp) # Loading old s content to register
+	addi $sp, $sp, 8 # I should restore stack
 	jr $ra
 
 putElementToArray:
