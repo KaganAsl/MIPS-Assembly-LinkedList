@@ -203,9 +203,11 @@ putElementToArray:
 	jr $ra
 	
 removeElementFromArray:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of the array, $a1 is index
+	mul $a1, $a1, 8 # Since every element is 8 byte
+	add $a0, $a0, $a1 # Address of the element which will be deleted
+	sw $zero, 0($a0) # Setting first word to zero
+	sw $zero, 4($a0) # Setting second word to zero
 	jr $ra
 
 createLinkedList:
