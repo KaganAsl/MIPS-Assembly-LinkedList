@@ -324,7 +324,21 @@ compareString:
 	jr $ra
 
 printSong:
+	# $a0 is address of the song
+	move $t0, $a0 # Printing name
+	lw $a0, 0($t0)
+	li $v0, 4
+	syscall
+
+	la $a0, tab # Printing tab
+	li $v0, 4
+	syscall
 	
-	#Write your instructions here!
+	lw $a0, 4($t0) # Printing duration
+	li $v0, 1
+	syscall
 	
+	la $a0, newLine # Printing new line
+	li $v0, 4
+	syscall
 	jr $ra
