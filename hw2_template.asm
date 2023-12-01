@@ -291,9 +291,25 @@ traverseArray:
 	jr $ra
 
 traverseLinkedList:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of the function, $a1 is the address of the linkled list
+	addi $sp, $sp -12 # I will use s registers to save address's
+	sw $s0, 0($sp)
+	sw $s1, 4($sp)
+	sw $ra, 8($sp) # Since I will call another function I should save $ra
+	move $s0, $a0 # Address of the function
+	move $s1, $a1 # Address of linked list
+	TLLL_Start: # traverse linked list loop start
+	lw $t0, 0($s1)
+	move $a0, $t0 # Address of the song
+	jalr $s0
+	lw $t2, 4($s1)
+	lw $s1, 4($s1) # If next node is not zero my next address should be next node. It's better to change
+	# before going loop.
+	bne $t2, $zero, TLLL_Start
+	lw $s0, 0($sp) # Loading old contents
+	lw $s1, 4($sp)
+	lw $ra, 8($sp)
+	addi $sp, $sp, 12
 	jr $ra
 
 createSong:
