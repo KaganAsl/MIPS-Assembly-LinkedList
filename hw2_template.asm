@@ -340,9 +340,100 @@ mainStart:
 	move $a1, $v0 # Address of song4
 	jal putElementToLinkedList
 	
-	lw $a1, arrayOfPlaylistsAddress
-	la $a0, printSong
+	## Print all the songs
+	la $a0, printSong # Address of printSong function
+	lw $a1, arrayOfPlaylistsAddress # Address of array
 	jal traverseArray
+	
+	## Remove the second song of each playlist.
+	# p1
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 0($t0) # Address of the playlist1
+	li $a1, 1 # Second song (index = 1)
+	jal removeElementFromTheLinkedList
+	# p2
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 8($t0) # Address of the playlist2
+	li $a1, 1 # Second song (index = 1)
+	jal removeElementFromTheLinkedList
+	# p3
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 16($t0) # Address of the playlist3
+	li $a1, 1 # Second song (index = 1)
+	jal removeElementFromTheLinkedList
+	# p4
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 24($t0) # Address of the playlist4
+	li $a1, 1 # Second song (index = 1)
+	jal removeElementFromTheLinkedList
+	# p5
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 32($t0) # Address of the playlist5
+	li $a1, 1 # Second song (index = 1)
+	jal removeElementFromTheLinkedList
+	
+	## Print all the songs
+	la $a0, printSong # Address of printSong function
+	lw $a1, arrayOfPlaylistsAddress # Address of array
+	jal traverseArray
+	
+	## Add 1 more song to each playlist.
+	# p1
+	la $a0, p1s5 # Address of the song name
+	lw $a1, p1s5_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 0($t0) # Address of playlist1
+	move $a1, $v0 # Address of song5
+	# p2
+	la $a0, p2s5 # Address of the song name
+	lw $a1, p2s5_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 8($t0) # Address of playlist2
+	move $a1, $v0 # Address of song5
+	jal putElementToLinkedList
+	# p3
+	la $a0, p3s5 # Address of the song name
+	lw $a1, p3s5_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 16($t0) # Address of playlist3
+	move $a1, $v0 # Address of song5
+	jal putElementToLinkedList
+	# p4
+	la $a0, p4s5 # Address of the song name
+	lw $a1, p4s5_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 24($t0) # Address of playlist4
+	move $a1, $v0 # Address of song5
+	jal putElementToLinkedList
+	# p5
+	la $a0, p5s5 # Address of the song name
+	lw $a1, p5s5_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 32($t0) # Address of playlist5
+	move $a1, $v0 # Address of song5
+	jal putElementToLinkedList
+	
+	## Print all the songs
+	la $a0, printSong # Address of printSong function
+	lw $a1, arrayOfPlaylistsAddress # Address of array
+	jal traverseArray
+	
+	## Remove the fourth playlist.
+	lw $a0, arrayOfPlaylistsAddress # Address of array
+	li $a1, 3 # Fourth playlist (index at 3)
+	jal removeElementFromArray
+	
+	## Print all the songs
+	la $a0, printSong # Address of printSong function
+	lw $a1, arrayOfPlaylistsAddress # Address of array
+	jal traverseArray
+	
+	## Search for given two songs, print the result.
 	
 	
 mainTerminate:
@@ -537,6 +628,7 @@ traverseArray:
 	jr $ra
 
 traverseLinkedList:
+	beq $a1, $zero, TLLL_End # If no linked list it should pass
 	# $a0 is address of the function, $a1 is the address of the linkled list
 	addi $sp, $sp -12 # I will use s registers to save address's
 	sw $s0, 0($sp)
@@ -556,6 +648,7 @@ traverseLinkedList:
 	lw $s1, 4($sp)
 	lw $ra, 8($sp)
 	addi $sp, $sp, 12
+	TLLL_End: # traverse linked list loop end
 	jr $ra
 
 createSong:
@@ -576,25 +669,50 @@ createSong:
 	jr $ra
 
 isSong:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of the song
+	lw $a0, 0($a0) # Address of name
+	la $a1, copmStr # Address of string
+	li $a2, 64 # Comparison size
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	jal compareString
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
 	jr $ra
 
 compareString:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of string1, $a1 is address of string2, $a2 is comparison size
+	li $v0, 1
+	move $t0, $zero
+	CSL: # compare string loop
+	beq $t0, 64, CSL_Exit
+	lb $t1, 0($a0)
+	lb $t2, 0($a1)
+	addi $a0, $a0, 1
+	addi $a1, $a1, 1
+	addi $t0, $t0, 1
+	beq $t1, $t2, CSL
+	li $v0, 0
+	CSL_Exit: # To exit when size finished
 	jr $ra
 
 printSong:
 	# $a0 is address of the song
-	move $t0, $a0 # Printing name
+	move $t0, $a0 # Holding address
+	
+	la $a0, name
+	li $v0, 4
+	syscall
+	
 	lw $a0, 0($t0)
 	li $v0, 4
 	syscall
 
 	la $a0, tab # Printing tab
+	li $v0, 4
+	syscall
+	
+	la $a0, duration
 	li $v0, 4
 	syscall
 	
