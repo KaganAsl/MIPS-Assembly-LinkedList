@@ -131,8 +131,219 @@ main:
 	lw $s7, 28($t0)
 
 mainStart:
-
-#Write your instructions here!
+	## Initialize array of playlist by using with an initial size of 3.
+	li $a0, 3 # Size
+	jal createArray
+	sw $v0, arrayOfPlaylistsAddress
+	
+	## Create 3 playlists as linked list and insert them into array of playlist.
+	# 0
+	jal createLinkedList
+	lw $a0, arrayOfPlaylistsAddress # Address of array
+	li $a1, 0 # Index
+	move $a2, $v0 # Address of playlist
+	jal putElementToArray
+	# 1
+	jal createLinkedList
+	lw $a0, arrayOfPlaylistsAddress # Address of array
+	li $a1, 1 # Index
+	move $a2, $v0 # Address of playlist
+	jal putElementToArray
+	# 2
+	jal createLinkedList
+	lw $a0, arrayOfPlaylistsAddress # Address of array
+	li $a1, 2 # Index
+	move $a2, $v0 # Address of playlist
+	jal putElementToArray
+	
+	## Resize array to size of 5.
+	lw $a0, arrayOfPlaylistsAddress # Address of the array
+	li $a1, 3 # Old size
+	li $a2, 5 # New size
+	jal resizeArray
+	sw $v0, arrayOfPlaylistsAddress
+	
+	## Create 2 more playlists and insert them into available areas in array of playlist.
+	# 3
+	jal createLinkedList
+	lw $a0, arrayOfPlaylistsAddress # Address of array
+	li $a1, 3 # Index
+	move $a2, $v0 # Address of playlist
+	jal putElementToArray
+	# 4
+	jal createLinkedList
+	lw $a0, arrayOfPlaylistsAddress # Address of array
+	li $a1, 4 # Index
+	move $a2, $v0 # Address of playlist
+	jal putElementToArray
+	
+	## Create 4 songs for each playlist and insert them into playlists. Each song must have a name
+	## and duration.
+	# p1
+	la $a0, p1s1 # Address of the song name
+	lw $a1, p1s1_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 0($t0) # Address of playlist1
+	move $a1, $v0 # Address of song1
+	jal putElementToLinkedList
+	
+	la $a0, p1s2 # Address of the song name
+	lw $a1, p1s2_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 0($t0) # Address of playlist1
+	move $a1, $v0 # Address of song2
+	jal putElementToLinkedList
+	
+	la $a0, p1s3 # Address of the song name
+	lw $a1, p1s3_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 0($t0) # Address of playlist1
+	move $a1, $v0 # Address of song3
+	jal putElementToLinkedList
+	
+	la $a0, p1s4 # Address of the song name
+	lw $a1, p1s4_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 0($t0) # Address of playlist1
+	move $a1, $v0 # Address of song4
+	jal putElementToLinkedList
+	# p2
+	la $a0, p2s1 # Address of the song name
+	lw $a1, p2s1_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 8($t0) # Address of playlist2
+	move $a1, $v0 # Address of song1
+	jal putElementToLinkedList
+	
+	la $a0, p2s2 # Address of the song name
+	lw $a1, p2s2_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 8($t0) # Address of playlist2
+	move $a1, $v0 # Address of song2
+	jal putElementToLinkedList
+	
+	la $a0, p2s3 # Address of the song name
+	lw $a1, p2s3_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 8($t0) # Address of playlist2
+	move $a1, $v0 # Address of song3
+	jal putElementToLinkedList
+	
+	la $a0, p2s4 # Address of the song name
+	lw $a1, p2s4_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 8($t0) # Address of playlist2
+	move $a1, $v0 # Address of song4
+	jal putElementToLinkedList
+	# p3
+	la $a0, p3s1 # Address of the song name
+	lw $a1, p3s1_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 16($t0) # Address of playlist3
+	move $a1, $v0 # Address of song1
+	jal putElementToLinkedList
+	
+	la $a0, p3s2 # Address of the song name
+	lw $a1, p3s2_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 16($t0) # Address of playlist3
+	move $a1, $v0 # Address of song2
+	jal putElementToLinkedList
+	
+	la $a0, p3s3 # Address of the song name
+	lw $a1, p3s3_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 16($t0) # Address of playlist3
+	move $a1, $v0 # Address of song3
+	jal putElementToLinkedList
+	
+	la $a0, p3s4 # Address of the song name
+	lw $a1, p3s4_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 16($t0) # Address of playlist3
+	move $a1, $v0 # Address of song4
+	jal putElementToLinkedList
+	# p4
+	la $a0, p4s1 # Address of the song name
+	lw $a1, p4s1_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 24($t0) # Address of playlist4
+	move $a1, $v0 # Address of song1
+	jal putElementToLinkedList
+	
+	la $a0, p4s2 # Address of the song name
+	lw $a1, p4s2_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 24($t0) # Address of playlist4
+	move $a1, $v0 # Address of song2
+	jal putElementToLinkedList
+	
+	la $a0, p4s3 # Address of the song name
+	lw $a1, p4s3_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 24($t0) # Address of playlist4
+	move $a1, $v0 # Address of song3
+	jal putElementToLinkedList
+	
+	la $a0, p4s4 # Address of the song name
+	lw $a1, p4s4_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 24($t0) # Address of playlist4
+	move $a1, $v0 # Address of song4
+	jal putElementToLinkedList
+	# p5
+	la $a0, p5s1 # Address of the song name
+	lw $a1, p5s1_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 32($t0) # Address of playlist5
+	move $a1, $v0 # Address of song1
+	jal putElementToLinkedList
+	
+	la $a0, p5s2 # Address of the song name
+	lw $a1, p5s2_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 32($t0) # Address of playlist5
+	move $a1, $v0 # Address of song2
+	jal putElementToLinkedList
+	
+	la $a0, p5s3 # Address of the song name
+	lw $a1, p5s3_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 32($t0) # Address of playlist5
+	move $a1, $v0 # Address of song3
+	jal putElementToLinkedList
+	
+	la $a0, p5s4 # Address of the song name
+	lw $a1, p5s4_duration # Duration of the song
+	jal createSong
+	lw $t0, arrayOfPlaylistsAddress
+	lw $a0, 32($t0) # Address of playlist5
+	move $a1, $v0 # Address of song4
+	jal putElementToLinkedList
+	
+	lw $a1, arrayOfPlaylistsAddress
+	la $a0, printSong
+	jal traverseArray
+	
 	
 mainTerminate:
 	la $a0, newLine		
@@ -301,9 +512,28 @@ removeElementFromTheLinkedList:
 	jr $ra
 
 traverseArray:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of the function, $a1 is the address of the array
+	addi $sp, $sp -16 # I will use s registers to save address's
+	sw $s0, 0($sp)
+	sw $s1, 4($sp)
+	sw $s2, 8($sp)
+	sw $ra, 12($sp)
+	move $s0, $a0 # Address of the function
+	move $s1, $a1 # Address of the array
+	lw $s2, 4($s1) # Size of the array
+	mul $s2, $s2, 8 # Size as bytes
+	add $s2, $s1, $s2 # End of array
+	TAL_Start: # Traverse array loop start
+	lw $a1, 0($s1) # Address of the linked list
+	move $a0, $s0 # Address of the function
+	jal traverseLinkedList
+	addi $s1, $s1, 8 # Since I should increment before loop I moved my $s1 to $t0
+	bne $s1, $s2, TAL_Start
+	lw $s0, 0($sp)
+	lw $s1, 4($sp)
+	lw $s2, 8($sp)
+	lw $ra, 12($sp)
+	addi $sp, $sp, 16
 	jr $ra
 
 traverseLinkedList:
@@ -338,8 +568,10 @@ createSong:
 	li $a0, 8 # 4+4 total 8 byte
 	li $v0, 9
 	syscall
-	lw $s0, 0($v0)
-	lw $s1, 4($v0)
+	sw $s0, 0($v0)
+	sw $s1, 4($v0)
+	lw $s0, 0($sp)
+	lw $s1, 4($sp)
 	addi $sp, $sp, 8
 	jr $ra
 
