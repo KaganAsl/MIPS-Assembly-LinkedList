@@ -212,9 +212,10 @@ resizeArray:
 	jr $ra
 
 putElementToArray:
-	
-	#Write your instructions here!
-	
+	# $a0 is address of the array, $a1 is index, $a2 is address of the element
+	mul $a1, $a1, 8 # Since every element is 8 byte
+	add $a0, $a0, $a1 # Base address + index will give me the location
+	sw $a2, 0($a0)
 	jr $ra
 	
 removeElementFromArray:
