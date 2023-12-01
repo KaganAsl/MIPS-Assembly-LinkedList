@@ -164,17 +164,26 @@ mainTerminate:
 
 createArray:
 	# $a0 is size of array
+	move $t0, $a0 # Holding size to put into array
 	mul $a0, $a0, 8 # Each element is 4+4 byte
 	li $v0, 9 # $a0 = number of bytes to allocate
 	syscall
+	move $t1, $v0 # Base address
+	add $t2, $v0, $a0 # End of the address
+	CAL: # create array loop
+	sw $t0, 4($t1) # Putting size into areas
+	addi $t1, $t1, 8
+	bne $t1, $t2, CAL
 	jr $ra # it stores address already in $v0 so we can just return
 
 resizeArray:
 	# $a0 is old address, $a1 is old size, $a2 is new size
-	addi $sp, $sp, -8 # I will use two register so I am moving it
+	addi $sp, $sp, -12 # I will use two register so I am moving it
 	sw $s0, 0($sp) # Saving s register in stack
 	sw $s1, 4($sp) # Saving s register in stack
+	sw $s2, 8($sp) # Saving s register in stack
 	move $s0, $a0 # I am saving address
+	move $s2, $a2 # Saving size
 	mul $a1, $a1, 8 # Each element is 4+4 byte
 	mul $a2, $a2, 8 # Each element is 4+4 byte
 	move $a0, $a2 # Size of allocation
@@ -183,17 +192,23 @@ resizeArray:
 	move $s1, $v0 # I should track which location I will place elements
 	li $t1, 0 # I don't know where to stop but since I have old size I can track it
 	RAL: # RAL = resizeArrayLoop
-	lw $t2, 0($s0)
+	lw $t2, 0($s0) # Since array sized change I can copy just first words
 	sw $t2, 0($s1)
-	lw $t2, 4($s0)
-	sw $t2, 4($s1)
 	addi $s0, $s0, 8
 	addi $s1, $s1, 8
 	addi $t1, $t1, 8
 	bne $a1, $t1, RAL
+	# Now I should put sizes into correct locations
+	move $t1, $v0 # Base address
+	add $t2, $v0, $a2 # End of the address
+	RAL2: # resize array loop 2
+	sw $s2, 4($t1) # Putting size into areas
+	addi $t1, $t1, 8
+	bne $t1, $t2, RAL2
 	lw $s0, 0($sp) # Loading old s content to register
 	lw $s1, 4($sp) # Loading old s content to register
-	addi $sp, $sp, 8 # I should restore stack
+	lw $s2, 8($sp) # Loading old s content to register
+	addi $sp, $sp, 12 # I should restore stack
 	jr $ra
 
 putElementToArray:
