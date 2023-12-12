@@ -678,6 +678,14 @@ isSong:
 	jal compareString
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
+	bne $v0, $zero, printFound
+	la $a0, noSong # If not found print not found
+	li $v0, 4
+	syscall
+	printFound: # If song founded it will print song found
+	la $a0, foundSong
+	li $v0, 4
+	syscall
 	jr $ra
 
 compareString:
