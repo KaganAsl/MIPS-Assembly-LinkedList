@@ -434,6 +434,50 @@ mainStart:
 	jal traverseArray
 	
 	## Search for given two songs, print the result.
+	# Carry search1 to copmSrt
+	la $a0, search1
+	la $a1, copmStr
+	copyLoop1:
+        lb $t0, 0($a0)
+        sb $t0, 0($a1)
+        beqz $t0, copyDone1
+        addi $a0, $a0, 1
+        addi $a1, $a1, 1
+        j copyLoop1
+        copyDone1:
+        # Search the song
+	la $a0, isSong # Address of printSong function
+	lw $a1, arrayOfPlaylistsAddress # Address of array
+	jal traverseArray
+	# Clear copmStr
+	la $a0, copmStr
+	li $a1, 64  # Number of bytes to clear
+	clearLoop:
+        sb $zero, 0($a0)
+        addi $a0, $a0, 1
+        addi $a1, $a1, -1
+        bnez $a1, clearLoop
+        # Carry search2 to copmSrt
+	la $a0, search2
+	la $a1,	copmStr
+	copyLoop2:
+        lb $t0, 0($a0)
+        sb $t0, 0($a1)
+        beqz $t0, copyDone2
+        addi $a0, $a0, 1
+        addi $a1, $a1, 1
+        j copyLoop2
+        copyDone2:
+        la $a0, newLine # Printing new line twice to better see search 2
+	li $v0, 4
+	syscall
+	la $a0, newLine
+	li $v0, 4
+	syscall
+        # Search the song
+	la $a0, isSong # Address of printSong function
+	lw $a1, arrayOfPlaylistsAddress # Address of array
+	jal traverseArray
 	
 	
 mainTerminate:
@@ -682,6 +726,7 @@ isSong:
 	la $a0, noSong # If not found print not found
 	li $v0, 4
 	syscall
+	jr $ra
 	printFound: # If song founded it will print song found
 	la $a0, foundSong
 	li $v0, 4
