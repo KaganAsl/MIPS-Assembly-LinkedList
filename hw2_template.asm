@@ -682,17 +682,19 @@ isSong:
 
 compareString:
 	# $a0 is address of string1, $a1 is address of string2, $a2 is comparison size
-	li $v0, 1
+	li $v0, 1 # It is 1 at the beginnening. If not same it will change into 0
 	move $t0, $zero
 	CSL: # compare string loop
-	beq $t0, 64, CSL_Exit
+	beq $t0, $a2, CSL_Exit # If exceed comparison size it will exit
 	lb $t1, 0($a0)
 	lb $t2, 0($a1)
+	beq $t1, $zero, CSL_Exit # If one string ended it will exit
+	beq $t2, $zero, CSL_Exit # If one string ended it will exit
 	addi $a0, $a0, 1
 	addi $a1, $a1, 1
 	addi $t0, $t0, 1
 	beq $t1, $t2, CSL
-	li $v0, 0
+	li $v0, 0 # If not same it will exit with 0
 	CSL_Exit: # To exit when size finished
 	jr $ra
 
